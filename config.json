@@ -1,0 +1,111 @@
+﻿{
+  "sampling_rate": 16000,
+  "processor": {
+    "model_id": "nvidia/parakeet-ctc-1.1b",
+    "from_pretrained_kwargs": {},
+    "tokenizer_kwargs": {}
+  },
+  "dataset": {
+    "id": "quinnlue/asr-test",
+    "audio_column": "audio_path",
+    "text_column": "orthographic_text"
+  },
+  "paths": {
+    "output_dir": "artifacts/parakeet-ctc-lora"
+  },
+  "lora": {
+    "r": 16,
+    "alpha": 32,
+    "dropout": 0.1,
+    "bias": "none",
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj"
+    ]
+  },
+  "smoke_test": {
+    "enabled": false,
+    "train_examples": 64,
+    "eval_examples": 16
+  },
+  "runtime": {
+    "device": "cuda",
+    "dtype": "bfloat16"
+  },
+  "wandb": {
+    "project": "parakeet-ctc-lora",
+    "log_model": "false",
+    "api_key_env_var": "WANDB_API_KEY"
+  },
+  "augmentation": {
+    "waveform": {
+      "time_stretch_prob": 0.3,
+      "rir_prob": 0.5,
+      "noise_prob": 0.5,
+      "min_speed": 0.9,
+      "max_speed": 1.1,
+      "max_stretch_samples": 480000,
+      "min_snr_db": 5.0,
+      "max_snr_db": 30.0
+    },
+    "vtlp": {
+      "prob": 0.3,
+      "alpha_min": 0.9,
+      "alpha_max": 1.1,
+      "fhi": 4800.0
+    },
+    "spec": {
+      "prob": 1.0,
+      "policy": "LB"
+    },
+    "noise_dataset": null,
+    "rir_dataset": null
+  },
+  "training_args": {
+    "per_device_train_batch_size": 16,
+    "per_device_eval_batch_size": 4,
+    "gradient_accumulation_steps": 2,
+    "learning_rate": 1e-5,
+    "weight_decay": 0.005,
+    "warmup_steps": 100,
+    "warmup_ratio": 0.0,
+    "num_train_epochs": 3.0,
+    "max_steps": -1,
+    "max_grad_norm": 1.0,
+    "lr_scheduler_type": "linear",
+    "optim": "adamw_torch",
+    "adam_beta1": 0.9,
+    "adam_beta2": 0.98,
+    "adam_epsilon": 1e-8,
+    "bf16": true,
+    "fp16": false,
+    "tf32": true,
+    "gradient_checkpointing": true,
+    "gradient_checkpointing_use_reentrant": false,
+    "evaluation_strategy": "epoch",
+    "eval_steps": null,
+    "save_strategy": "epoch",
+    "save_steps": null,
+    "save_total_limit": 2,
+    "save_safetensors": true,
+    "logging_strategy": "steps",
+    "logging_steps": 10,
+    "logging_first_step": false,
+    "report_to": [
+      "wandb"
+    ],
+    "run_name": null,
+    "load_best_model_at_end": true,
+    "metric_for_best_model": "wer",
+    "greater_is_better": false,
+    "remove_unused_columns": false,
+    "dataloader_pin_memory": true,
+    "dataloader_num_workers": 0,
+    "group_by_length": false,
+    "length_column_name": "input_length",
+    "seed": 42,
+    "data_seed": null
+  }
+}
